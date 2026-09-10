@@ -1,0 +1,30 @@
+Timeline
+- Runner spec/conformance/run.py (stdlib only): validates trace structure,
+  runs a driver once over all traces (JSON Lines protocol), compares
+  digests + final observation; PASS only with zero findings.
+- bin/verify.sh self-test: corrupted copy of the traces + 5 mutant engines
+  (impl/python/conformance/mutants.py) must all be rejected before the
+  reference is allowed to PASS.
+- Draft mutant "rational-gravity" (exact Fraction(2, den)) was found to be
+  a silent no-op before any run: float + Fraction is float and
+  fl(1/48)*2 == fl(2/48). Replaced by "gravity-ceil-cadence".
+- Gate run 1 (2026-09-10): corrupted trace rejected; 4/5 mutants rejected;
+  mutant ccw-release-keeps-dcd ACCEPTED -> GATE: FAIL. Trace 03 never
+  released CCW at dcd >= 2 before a gated press, so QUIRK-3 was unpinned.
+  Trace 03 strengthened (experiments/004-verify-the-verifier).
+- Gate run 2 (2026-09-10): all self-tests ok, Python 14/14 -> GATE: PASS.
+
+Reproduction
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock bin/verify.sh
+  self-test ok: corrupted trace rejected
+  self-test ok: mutant 'ccw-release-keeps-dcd' rejected
+  self-test ok: mutant 'gravity-ceil-cadence' rejected
+  self-test ok: mutant 'level-target-plus-six' rejected
+  self-test ok: mutant 'standard-180-kicks' rejected
+  self-test ok: mutant 'no-ghost' rejected
+  == python
+  PASS: 14/14 traces, trace-set sha256 981baab4279c5c9f93f42eda23f1eb9f2b0889b4c228637e2ac19b9a479c2026
+  GATE: PASS   (exit 0)
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14 (venv
+  /scratch/venvs/tetris-py, --system-site-packages), numpy 2.4.6,
+  hypothesis 6.165.10, pytest 9.1.1.
