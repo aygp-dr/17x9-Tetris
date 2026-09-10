@@ -1,0 +1,31 @@
+Timeline
+- Read impl/python/legacy/tetris.py and utilities/ in full; traced every
+  handler (_rotate*, _moveDown, _hardDrop, _hold, _checkForClears,
+  _checkLevelUp, _gameOver, _fillUp, _fallDown, _doCountdown, play loop).
+- Derived conformance mode: logical frames at 30 FPS, events applied in
+  order before level check and gravity, suspension/resume for the
+  line-clear flash and the game-over sequence (the legacy busy-waits
+  inside handlers and then continues the same loop iteration).
+- Gravity: first assumed exact 2/den; experiment 003 showed the legacy's
+  binary64 accumulation takes 25 frames at level 0 (not 24), also 20 @38
+  and 15 @28 -> SPEC mandates binary64 (QUIRK-8).
+- Collision: legacy relies on numpy negative-index wraparound; experiment
+  002 (exhaustive over reachable candidates) shows "outside collides" is
+  equivalent -> SPEC §4.4.
+- PRNG: chose xorshift32 (32-bit ops are native in JS/ClojureScript,
+  unlike SplitMix64) + Fisher-Yates over I J L O S Z T; KATs in App. A.
+- Differential (experiment 001): 120 seeds x 400 random frames (0 clears
+  reached -> added bot), then 8 bot games x 1200 frames with 0/5/20%
+  noise: 0 divergences, 2038 flash frames, 19 game overs, max level 16.
+  Only timeline adaptation: post-game-over black frame (QUIRK-10).
+- 19 QUIRKs, 19 properties (P1-P19).
+
+Reproduction
+  PYTHONPATH=impl/python/engine:impl/python/sim:impl/python/tests \
+    /scratch/venvs/tetris-py/bin/python experiments/001-legacy-differential/run.py 8 1200
+  -> divergences 0 {'clear_frames': 2038, 'gameovers': 19, 'maxlevel': 16, 'frames': 9600}
+  /scratch/venvs/tetris-py/bin/python experiments/003-gravity-binary64/run.py
+  -> 48: 25 vs 24, 38: 20 vs 19, 28: 15 vs 14 (binary64 vs rational)
+Supported cell: FreeBSD 15.1 amd64 (Claude via linuxulator), Python 3.12.14,
+  numpy 2.4.6, hypothesis 6.165.10, pytest 9.1.1 (venv /scratch/venvs/tetris-py,
+  --system-site-packages).
