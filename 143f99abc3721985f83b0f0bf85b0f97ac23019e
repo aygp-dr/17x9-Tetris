@@ -1,0 +1,3 @@
+Timeline: 2026-09-11.
+Reproduction: bb test tetris.displays.specs-test -> STEST checked=50 failures=0; DISPLAYS_FIXTURES=<contrib/displays/contract/fixtures> bb fixtures -> 13 checks, 882 cases, 0 failed, 2 KNOWN (fixture issue: non-object JSON messages).
+Supported cell: babashka 1.13.220, FreeBSD 15.1 jail (claude-clojure), bb test fast loop; JVM clojure -M:test pending the heavy lock.
