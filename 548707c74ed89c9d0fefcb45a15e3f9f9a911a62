@@ -1,0 +1,13 @@
+Timeline
+- Read the vectors (display-reservation 2970f63) and its requests to main
+  and to the steward: their readings now match dlk1.py's; no disagreement,
+  so no request to the steward. The audience gap (a key names no relay)
+  is the steward's open point.
+- Index state exported and tested before the commit (demo/__main__.py and
+  test_lease_keys.py staged as their relay-mode variants).
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 1200 /scratch/venvs/tetris-py/bin/python -m pytest -p no:cacheprovider \
+    demo/test_demo.py demo/test_lease_keys.py demo/test_dlk1_vectors.py \
+    contract/test_dlk1.py contract/test_check_session.py contract/relay_conformance.py
+  -> errors="0" failures="0" skipped="0" tests="260"
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1.
