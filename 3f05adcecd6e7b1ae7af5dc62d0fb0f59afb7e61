@@ -1,0 +1,32 @@
+Timeline
+- Fixtures: 11 files, 842 cases,  bytes; gen_fixtures --check: no drift.
+  frames.json first came out at 506 KB; RLE for long runs and black
+  bodies for the wrong-length rgb24 cases brought it to 362 KB.
+- Found while writing the boundary checks: mono has no exact rgb24
+  tie (black and white are equidistant only when r+g+b = 382.5), and
+  idx*(n-1)/15 is never a half (15 is odd), so the level rule needs no
+  rounding mode. 65,537 is prime: the cell cap never binds alone.
+- relay_conformance first failed hub75 "frames at fps pass" (3 of 8
+  dropped at 25 ms spacing, load average 7.3). An isolated experiment
+  (scratch exp_rate.py, relay-side gaps from its --record) accepted 35/35
+  with gaps 25.5-99 ms: the drops were frames bunched by host load, which
+  no relay can tell from a burst. The test now passes on one clean round
+  in three; back-to-back drops and above-fps drops are separate tests.
+- A failing conformance test left its sockets open and cascaded busy
+  into later hub75 tests; run() now closes every peer a test opened.
+Reproduction
+  cd contrib/displays; PY=/scratch/venvs/tetris-py/bin/python
+  nice -n 10 timeout 1200 $PY -m pytest -p no:cacheprovider demo contract
+  -> 175 tests: 174 passed, 1 skipped (jsonschema not installed), 79 s
+  $PY -m pytest contract/relay_conformance.py  -> 87 passed, 0 skipped (51 s)
+  split mode (--source-url 127.0.0.1, --viewer-url localhost, --relay-udp)
+  -> 87: 77 passed, 10 skipped (8 boundary grids, hex fan-out, same_url), 0 failed
+  verify the verifier:
+    --relay-cmd "... relay --seq-rule serial"  -> 13 failed: exactly the
+      literal-rule cases (12 pal16 preset frames: prefix 258,0,65535; the wrap)
+    --relay-cmd "... relay --fps 30"           -> test_hub75_runs_at_60_fps fails
+    test_check_session: clean recorded session 0 findings; 10/10 tampered
+      copies flagged; test_replay_catches_a_tampered_fixture passes
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14,
+  websockets 17.1, pytest 9.1.1, hypothesis 6.165.10 (150 examples;
+  thorough profile queued on heavy.lock).
