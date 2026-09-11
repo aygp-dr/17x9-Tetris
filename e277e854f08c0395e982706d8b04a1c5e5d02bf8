@@ -1,0 +1,21 @@
+Timeline
+- Probed the jail first: no (json) and no (gcrypt hash) module for Guile 3,
+  and pkg search lists no guile-gcrypt or guile-json for guile30 (only
+  guile-lib, slib, cairo, g-golf). So SHA-256 is pure Scheme; no pkg
+  install was needed or attempted.
+- Before the first run: xorshift32-outputs misused unfold (it ignored its
+  seed); rewritten as a named let. The Z picture had a stray 'Z' for '#'
+  (harmless: any non-'.' cell is occupied); fixed.
+- First run: every Appendix A.1 vector and the FIPS 180-4 vectors (empty,
+  abc, 448 bits) matched.
+
+Reproduction
+  guile3 -L impl/guile -L impl/guile/tests impl/guile/tests/run.scm unit
+observed (the same values, first by hand):
+  seed 1: (270369 67634689 2647435461 307599695 2398689233) (SILOZTJ LJOZSTI ZIOJSLT)
+  seed 42: (11355432 2836018348 476557059 3648046016 3759983556) (JLOIZTS ILJOZST OZITJLS)
+  seed 0: (1359758873 3761132862 2075758394 25405621 3862129951) (ZLOJTIS ZOTSIJL JITOLSZ)
+  black e0ee29ce7978a33861e6e63545deda9e734ea784ee8e4ba6fd6aa56b775f6ca9
+  white cc1c8c603a0863247abc4b8a117a234714b37d2be10ca27218301e5e617830d8
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11 (guile3/guild3, no packages); runner: Python 3.12.14 (/scratch/venvs/tetris-py).
