@@ -1,0 +1,10 @@
+Timeline
+- Read draft v0 at 790c081 (docs/PROTOCOL.md sha256 87004bfc...8503, the same file hy pinned) and the Python codec/server it describes.
+- Verified the ladder citation against /scratch/work/notes/state-machine-ladder-v2.4.0-spec.org (sha256 88654eb6...51fc = cited). v0's 'a connection is a chain' is wrong (refused is reached from open without joined): reclassified as a branching lifecycle (ladder 2.4). Slot and phases (cycles) and the session (the 1 fold) were right.
+- Adopted hy's events-on-frames proposal as REQUIRED, and client_role in the server hello, so every client can re-fold a session (replica, ladder 2.7).
+- First WS draft required a 1 MiB WS limit so too_large could be sent; replaced by python's library-grounded items (1009 may come without the error, 1007 for non-UTF-8, abort on output overflow, Origin allow-list, unix carriers), keeping path /tetris-17x9 and subprotocol tetris-17x9.v1 (required).
+- First drafted a separate 'display feed' binding (path /tetris-17x9/feed/...); replaced, on the user's published protocol, by citing wal.sh/tools/display (verbatim copy sha256 d8a3b49d...aac) as the normative external display protocol, with our servers as sources only.
+Reproduction
+  sha256sum docs/PROTOCOL.md  -> 3c06d4f4f17691be48f9294b7fb9c9d7767303814aa87f32f665ba2762314d8c
+  conformance evidence: see the notes on fd0674d and experiment 007.
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6
