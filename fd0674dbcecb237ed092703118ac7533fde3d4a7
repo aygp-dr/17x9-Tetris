@@ -1,0 +1,12 @@
+Timeline
+- First run: the transcript lint flagged the server hello's rows:17 (a count) as a pinned frame; only frame expectations are restricted now.
+- v0 server (790c081): FAIL, 20 findings / 21 transcripts (version refused; e03 fails the schema gate: no client_role).
+- v1 wire shim (experiment 007): PASS 21/21 over TCP; PASS 21/21 through proxy.py as a WebSocket front (same contract-set digest).
+- Mutant servers, all 21 transcripts each: digest-flip, phase-alias, no-events -> schema gate; illegal-edge -> state gate (gameover -> playing into frame 91); repaint, drop-state, stamp-shift -> oracle. Corrupted transcript (07, frame 60 digest) -> oracle, 1 finding.
+Reproduction
+  SHIM='env PYTHONPATH=impl/python/engine:impl/python/sim python experiments/007-contract-v1-conformance/v1_shim.py --mode engine --clock lockstep'
+  python spec/protocol/check.py --launch "$SHIM --port {port}" --server 'tcp://127.0.0.1:{port}'
+    -> PASS: 21/21 transcripts over tcp, contract-set sha256 e45524faf46512ddd3e2bd53e4d1dec957aba7fdd374447b979cb320e3da7c4d
+  python spec/protocol/check.py --launch "python spec/protocol/proxy.py --listen ws://127.0.0.1:{port}/tetris-17x9 --upstream-launch '$SHIM --port {upstream_port}'" --server 'ws://127.0.0.1:{port}/tetris-17x9'
+    -> PASS: 21/21 transcripts over ws, same digest
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6
