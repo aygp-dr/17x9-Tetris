@@ -1,0 +1,29 @@
+Timeline
+- First unit run: 51 passed, 2 failed, both in the JSON tests: the
+  expectations used R6RS "\x00e9;" escapes, which Guile's default reader
+  reads as \x00 then "e9;". Fixed the tests to Guile's é / \U01f600;
+  the reader was right.
+- The lint of the test modules caught let-values used without
+  (srfi srfi-11) in the harness.
+- While writing P11: across a soft-drop top-out the resumed rest of a
+  frame succeeds a second gated action in the new game (QUIRK-11 DCD 2).
+  Confirmed on the Python reference by hand (seed 1, k = 77: rot 1, then
+  rot 3 and DCD 0 after the resume); filed with the steward.
+- Vacuity check: the flash properties (P16 flash, P18 queue) pass
+  trivially if the bot never clears. It reaches a flash for 20 of 20
+  seeds, within 4-22 frames of play.
+
+Reproduction
+  guile3 -L impl/guile -L impl/guile/tests impl/guile/tests/run.scm unit
+    => runner self-test: the failing mutant exits 1; ending at test-end
+       alone it exits 0; 53 expected passes; exit 0 (4.2 s)
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock \
+    guile3 -L impl/guile -L impl/guile/tests impl/guile/tests/run.scm properties
+    => 32 expected passes, exit 0; properties: 162.5 s; 25 generated
+       checks, 3370 trials (TETRIS_PBT_SCALE=1, TETRIS_PBT_SEED=20260911):
+       P1 100, P2 60, P3 100, P4 100, P5 100, P6 100+100, P7 200, P8 300,
+       P9 100, P10 300, P11 300, P12 300, P13 300+100, P14 100,
+       P15 300+100, P16 40+20 (+ boot, 4 seeds), P17 40, P18 20+60
+       (+ boot), P19 A.1 vectors, P20 100+30 (+ both witnesses)
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11.
