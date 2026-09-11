@@ -1,0 +1,21 @@
+Timeline
+- Probed the two things the design rests on before writing it: (ice-9
+  match) $ patterns destructure define-immutable-record-type records, and
+  a composable continuation captured by abort-to-prompt through a named
+  let can be resumed repeatedly with different values (observed
+  (done 107) (done 107) (done 7)).
+- Wrote the engine from SPEC §9.2's pseudocode, not from the Python
+  structure: suspension is the continuation, a flash carries its next
+  phase, the bag is a list, the latches a list of consumed ones.
+- The first conformance run passed 14/14 traces; no engine change was
+  needed. (Its very first attempt crashed in the JSON writer, fixed in
+  the driver commit.)
+
+Reproduction
+  python3 spec/conformance/run.py --verbose \
+    --impl "guile3 -L impl/guile impl/guile/bin/conformance.scm"
+observed: ok for 01..14, then
+  PASS: 14/14 traces, trace-set sha256 981baab4279c5c9f93f42eda23f1eb9f2b0889b4c228637e2ac19b9a479c2026
+  (3.1 s user; the 3m37 wall time was the heavy lock's queue)
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11 (guile3/guild3, no packages); runner: Python 3.12.14 (/scratch/venvs/tetris-py).
