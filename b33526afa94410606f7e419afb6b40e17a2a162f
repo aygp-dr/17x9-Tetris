@@ -1,0 +1,37 @@
+Timeline
+- 2026-09-11. Xvfb + xterm + scrot: the dry-run (-r FreeBSD-latest)
+  only adds packages, but 59 of them (428 MiB), including sdl2, mesa and
+  wayland. Not installed: the standing brief forbids X11/SDL, and the
+  host is under memory pressure.
+- tmux fallback: installed tmux 3.7c + libevent (the dry-run only adds).
+  A capture-pane -e -p trial of the emacs -nw command at 60x24 worked.
+  Dropped on request: screenshots are to come from the Emacs harness, not
+  a terminal grab. capture_emacs.sh and ans2png.py were never committed.
+- The batch dumper had three bugs, each fixed:
+  (1) the .ans was built inside with-temp-file, so gamegrid-get-cell read
+      the empty temp buffer (nil);
+  (2) tetris-n-shapes/-rows/-score are buffer-local, so they read 0 in
+      the temp buffer;
+  (3) :json-null was encoded as the string "json-null", so frame_no was
+      dropped (tetris.el has no frame clock).
+  The caption also wrapped mid-word; it now uses textwrap.
+- feat/emacs-client polled at 790c081: tetris-mit-display-snapshot-batch
+  is not there yet, so emacs-display-seed42.png is pending.
+
+Reproduction
+  PYTHONPATH=impl/python/engine:impl/python/sim python3 -m tetris_sim --seed 42 --bot --frames 451 --ansi-final \
+      --trace-out docs/media/screenshots/seed42-bot-f0450.trace.json | head -17 > docs/media/screenshots/python-seed42-f0450.ans
+  python3 docs/media/textshot.py from-ans docs/media/screenshots/python-seed42-f0450.ans docs/media/screenshots/python-seed42-f0450.json \
+      --meta "command=python -m tetris_sim --seed 42 --bot --frames 451 --ansi-final" --meta seed=42 --meta frame_no=450 \
+      --meta "source=Python engine, tetris_sim --ansi-final (text only)"
+  python3 docs/media/textshot.py png docs/media/screenshots/python-seed42-f0450.json docs/media/screenshots/python-seed42-f0450.png \
+      --trace docs/media/screenshots/seed42-bot-f0450.trace.json --frame 450
+    -> engine frame 450: 8b4f29910ad4328366cc2cd16c999b32951e7c79f5f78e8dad0b332c6d18d5a4 (equal; ok)
+  emacs --batch -Q -l docs/media/emacs/tetris-el-snapshot.el --eval '(tetris-el-snapshot "17x9" "Left Left Left SPC Right Right Right SPC Up SPC Up Up Left SPC Right Right Right Right SPC Left Left SPC" "docs/media/screenshots/emacs-tetris-el-9x17")'
+  python3 docs/media/textshot.py png docs/media/screenshots/emacs-tetris-el-9x17.json docs/media/screenshots/emacs-tetris-el-9x17.png
+    -> shapes 6 rows 0 score 35; digest 29d825354fb0b29a94e8ff62b4f152a94dd3828ea51b594eba9f910afa2904ba
+    -> emacs-tetris-el-9x17.png sha256 706f74e068c05da98b9789b46e5726c6764f3a84936308b5ffe78d2e6a7668d1
+    -> python-seed42-f0450.png  sha256 4d593ddc83f8a77b30da0b107d84aa8ef418cb7f16e868ee9a12423a319b9f28
+  Two runs: byte-identical .ans/.json/.png.
+  Supported cell: FreeBSD 15.1-RELEASE amd64, GNU Emacs 31.1 (emacs-nox),
+  Python 3.12.14, Spleen 8x16 from /usr/share/vt/fonts.
