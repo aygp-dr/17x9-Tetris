@@ -1,0 +1,21 @@
+Timeline
+- Gate run 1: FAIL (mutant ccw-release-keeps-dcd survived; trace 03
+  strengthened). Gate run 2: PASS.
+- Traces regenerated into a scratch dir: byte-identical to the pinned set
+  (generator is deterministic).
+- Thorough pre-seal pytest (HYPOTHESIS_PROFILE=thorough, TETRIS_SLOW=1)
+  run 1: 1 failure, test_p15_one_hold_per_lock, falsifying example
+  seed=0, sch=(2, {0: [hold], 1: [hold]}, bot). A lock followed by a hold
+  in one step is legal (one hold per locked piece); the *test* assumed no
+  lock between the two states. Test fixed (no engine or spec change).
+- Seal run: gate with self-test + thorough pytest, see Reproduction.
+
+Reproduction
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock sh -c \
+    'bin/verify.sh; HYPOTHESIS_PROFILE=thorough TETRIS_SLOW=1 \
+     /scratch/venvs/tetris-py/bin/python -m pytest -q'
+  sha256sum SPEC.md
+  -> b45e4598bce5b61ac3b333b339f60805bf0d80ff334cf2c092652d7ff3eb88a5
+  trace set -> 981baab4279c5c9f93f42eda23f1eb9f2b0889b4c228637e2ac19b9a479c2026
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, numpy 2.4.6,
+  hy 1.3.1, hypothesis 6.165.10, pytest 9.1.1.
