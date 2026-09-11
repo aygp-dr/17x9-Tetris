@@ -8,5 +8,5 @@ Timeline
 Reproduction
   cd contrib/displays; nice -n 10 timeout 300 /scratch/venvs/tetris-py/bin/python \
     -m pytest -p no:cacheprovider contract/test_dlk1.py
-  -> see the test count in the commit report; 1 skipped (vectors)
+  -> 50 tests: 49 passed, 1 skipped (inputs/dlk1-vectors.json not yet published)
 Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14.
