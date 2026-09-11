@@ -1,0 +1,7 @@
+Timeline
+- Read the holder-rereserve request (0836Z) and the emacs FYI (0935Z)
+  before the final report; the relay already re-granted (c931c0f).
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 900 /scratch/venvs/tetris-py/bin/python \
+    -m pytest -p no:cacheprovider contract/relay_conformance.py -> 88 passed, 0 skipped
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1.
