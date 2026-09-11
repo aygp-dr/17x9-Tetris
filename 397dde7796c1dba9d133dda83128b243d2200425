@@ -1,0 +1,30 @@
+Timeline
+- Read the steward request, docs/PROTOCOL.md (contract v1; at fb816c1 its
+  sha256 is 6ac5ec0f..., newer than the request's 3c06d4f4...), the
+  schemas, check.py (session mode), proxy.py and experiment 007.
+- Branch server is draft v0, so a v1-only client would break this branch's
+  own integration tests. Chose a client-side fallback: offer (1 0); a
+  pre-hello `version' refusal reopens in v0. Messages arriving while the
+  version is settled are held, then delivered in order from a timer, so
+  callers store the process first.
+- client_role acted on in remote, display, lockstep, mirror; frame events
+  validated; KAV compares E_k per frame (all frames, KAV-14 3200/3200).
+- Proof against the native v1 server (impl/python-ws 676088b), recorded by
+  proxy.py; check.py --session --require-kav: 14/14 sessions, no busy
+  retries recorded, no fallback attempts (v1 hellos only).
+
+Reproduction
+  PY=/scratch/venvs/tetris-py/bin/python
+  env PYTHONPATH=$PW/impl/python/engine:$PW/impl/python/sim $PY -m tetris_sim.server \
+      --mode engine --clock lockstep --port 27709 &
+  $PY $CW/spec/protocol/proxy.py --listen tcp://127.0.0.1:27800 \
+      --upstream tcp://127.0.0.1:27709 --record rec.jsonl &
+  emacs --batch -Q -l contrib/emacs/tetris-mit.el -f tetris-mit-kav-batch \
+      --host 127.0.0.1 --port 27800 spec/conformance/traces/   -> PASS: 14/14 KAVs pass
+  $PY $CW/spec/protocol/check.py --session rec.jsonl --verbose --require-kav
+      -> PASS: 14/14 session(s)
+  (script: /scratch/work/emacs-scratch/proof/run.sh; rec.jsonl 11,981,660 B,
+   sha256 4ac9bc64...)
+
+Supported cell: FreeBSD 15.1 amd64 jail (127.0.0.1 binds map to 10.0.0.22),
+  GNU Emacs 31.1 batch, Python 3.12.14.
