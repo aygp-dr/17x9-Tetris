@@ -1,0 +1,9 @@
+Timeline
+- Read both requests (reservation-main-20260911T1326Z/1339Z) and the steward ruling relayed by main.
+- The 1339Z RESULT had relay_frames 194 = 193 sent-and-accepted + 1 black frame after exp (sent 197, refused 4): the post-exp black frame broke relay_match, and the verdict ranked it above the state ended.
+- Split the relay log at the lease cut; verdict precedence 3 > 4 > checks; user stops at the cut.
+Reproduction
+  emacs --batch -Q -L contrib/emacs -l tetris-mit-reserved -f tetris-mit-play-reserved-batch \
+    --relay URL --key-file KEY --relay-display remote --trace spec/conformance/traces/14-bot-marathon.json
+  (key exp ~8 s into the game) -> SLOT ENDED, exit 4, relay_match true
+Supported cell: FreeBSD 15.1 jail, GNU Emacs 31.1, Python 3.12.14, mock relay at main ae120a6.
