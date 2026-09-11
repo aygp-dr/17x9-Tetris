@@ -1,0 +1,13 @@
+Timeline
+- Against main's real lockstep server (git archive main impl/python, read
+  only, into scratch) SIGINT after the 360th tick: the feed received all
+  360 and returned; the server flushes before closing, so the harness's
+  hang was not reproduced that way.
+- HEAD 687f3dc's feed against the stand-ins: close after 4 of 10 frames ->
+  returned op done (exit 0, wrong); stops sending with the socket open ->
+  HUNG (no return in 5 s): the harness's symptom. Both fixed.
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 600 /scratch/venvs/tetris-py/bin/python \
+    -m pytest -p no:cacheprovider demo/test_feed.py   -> 73 passed
+  full suite: 405 tests, 404 passed, 1 skipped (jsonschema)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1.
