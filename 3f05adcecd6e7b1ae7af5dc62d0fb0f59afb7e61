@@ -1,5 +1,5 @@
 Timeline
-- Fixtures: 11 files, 842 cases,  bytes; gen_fixtures --check: no drift.
+- Fixtures: 11 files, 842 cases, 632111 bytes; gen_fixtures --check: no drift.
   frames.json first came out at 506 KB; RLE for long runs and black
   bodies for the wrong-length rgb24 cases brought it to 362 KB.
 - Found while writing the boundary checks: mono has no exact rgb24
