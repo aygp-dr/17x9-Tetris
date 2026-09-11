@@ -1,0 +1,9 @@
+Timeline
+- Copied spec.md and capabilities.json from the coordinator's pin; sha256
+  re-checked: f2028d88... spec.md, 11fdc2b3... capabilities.json (equal).
+- index.html not copied (page shell only).
+- Validator subset verified on caps/reserve samples (bool is not an
+  integer, 1.0 is; unknown keywords raise).
+Reproduction
+  sha256sum contrib/displays/contract/wal-sh-display-0.2.1/{spec.md,capabilities.json}
+Supported cell: FreeBSD 15.1 amd64, Python 3.12.14 (venv /scratch/venvs/tetris-py).
