@@ -1,0 +1,6 @@
+Timeline
+- Rewrote the demo README for spec v0.2.1 after the relay (c931c0f) and
+  the kit (3f05adc) landed; the old one described w*h*3 RGB frames.
+Reproduction
+  docs only; the commands it lists ran green at 3f05adc (demo 45 passed).
+Supported cell: as 3f05adc.
