@@ -1,0 +1,8 @@
+Timeline
+- Terminal I/O kept out of the pure engine; stty raw/-echo restored on exit.
+
+Reproduction
+- Driven through a PTY: started, ran the game loop, rendered truecolor rows,
+  quit cleanly; header shows lines/level/time.
+
+Supported cell: go1.24.13 freebsd/amd64.
