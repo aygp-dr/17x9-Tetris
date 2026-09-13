@@ -1,0 +1,14 @@
+Timeline
+- Palettes/profiles transcribed from the pinned capabilities.json v0.2.1.
+- One test expectation was wrong (the port was right): nearest-color for pure
+  red (255,0,0) is index 4 (#AA0000, 85^2) not 12 (#FF5555, 85^2+85^2).
+- Lease lifecycle (busy/renew/release/TTL-lapse) tested with an injected clock.
+
+Reproduction
+- cd impl/go && go test ./display/  -> ok mitris/display
+- go build ./... && go vet ./... && gofmt -l .  -> clean
+- display-tui driven through a PTY (-d green-building -demo tetris): header
+  d=green-building 9x17 cga 30fps, lease auto-reserved as 'tui' with live TTL,
+  frame counter climbing, truecolor grid escapes present.
+
+Supported cell: go1.24.13 freebsd/amd64.
