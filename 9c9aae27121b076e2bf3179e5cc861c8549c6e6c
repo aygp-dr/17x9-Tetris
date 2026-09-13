@@ -1,0 +1,14 @@
+Timeline
+- Verified every recipe against the local mock relay (contrib/displays/demo
+  relay.py) on 127.0.0.1:8765.
+
+Reproduction / observations
+- websocat view -> caps + lease; reserve -> granted.
+- wscat prints only interactively (silent when piped) -> documented as the
+  human REPL, websocat/python for scripts.
+- pal16 (153 bytes) and multi-line hex frames both deliver; relay fans out in
+  the display's caps.format (pal16) regardless of source format.
+- errors reproduced: unknown-op, bad-frame-length, not-holder.
+- gotcha: python websockets 400s on subprotocols=[]; omit it.
+
+Supported cell: python3.11 + websockets 16.0, wscat, websocat; FreeBSD amd64.
