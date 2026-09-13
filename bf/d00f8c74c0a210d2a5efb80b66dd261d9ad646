@@ -1,0 +1,6 @@
+Timeline
+- Schemas written against contract v1; jsonschema is not installed and only py312-websockets may be added, so schema.py implements exactly the keywords used and rejects any other.
+- The first full checker run took 78 s, 92% in schema.py _v (4.1 M calls, 2 M $ref resolutions); memoizing validity by type-tagged value (true != 1, 1.0 != 1) and $ref resolution brought it to 18.8 s with the self-test unchanged.
+Reproduction
+  python spec/protocol/check.py --selftest  -> ok: schema and checker self-test, 45 cases
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6

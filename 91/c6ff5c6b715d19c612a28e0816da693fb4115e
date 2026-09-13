@@ -1,0 +1,7 @@
+Timeline
+- The new test first: against 8e114eb's feed it failed (TimeoutError after
+  10 s, the D3 hang); with the fix it passes.
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 1500 /scratch/venvs/tetris-py/bin/python -m pytest -p no:cacheprovider demo contract
+  -> errors="0" failures="0" skipped="1" tests="406"
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1.

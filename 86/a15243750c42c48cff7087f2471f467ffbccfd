@@ -1,0 +1,2 @@
+Reproduction: ruff check spec/protocol spec/conformance/audit.py experiments/007-contract-v1-conformance -> All checks passed!; check.py --selftest ok 45; gen_transcripts --check ok; shim PASS 3/3 (e01, e06, 02).
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6

@@ -1,0 +1,15 @@
+Timeline (2026-09-11, UTC)
+- 08:45 impl/python-ws 8050e38/676088b: native contract v1; check.py 21/21 tcp and ws (steward re-run)
+- 08:55 spec/contract merges impl/python-ws (8b7a6a7); verify.sh python-ws line (fb816c1)
+- 09:02 SERVERS="python python-ws" bin/verify.sh GATE: PASS at fb816c1 (log /scratch/work/steward-scratch/gate-contract-v1.log): appendix, python+hy 14/14 (981baab4...), 9 self-tests incl. 7 mutant servers, 21 transcripts, python 21/21 tcp, python-ws 21/21 ws
+- 09:28 emacs 397dde7: tetris-mit-kav-batch through proxy.py --record, check.py --session --require-kav 14/14 (agent run, rec 4ac9bc64)
+- 09:50 steward reproduction from git archive 397dde7 against python 676088b (clean): KAV 14/14 with frame events (KAV-14 801/801 digests, 3200/3200 events); check.py --session --require-kav 14/14; rec sha256 9225246d42b7572991ef98e0908d31bf129b3ee169f64523e612842b1bbc2e90
+
+Reproduction
+  W=impl/python-ws@676088b tree; C=spec/contract tree
+  env PYTHONPATH=$W/impl/python/engine:$W/impl/python/sim python -m tetris_sim.server --mode engine --clock lockstep --port 28709 &
+  python $C/spec/protocol/proxy.py --listen tcp://127.0.0.1:28800 --upstream tcp://127.0.0.1:28709 --record rec.jsonl &
+  emacs --batch -Q -l contrib/emacs/tetris-mit.el -f tetris-mit-kav-batch --host 127.0.0.1 --port 28800 spec/conformance/traces/
+  python $C/spec/protocol/check.py --session rec.jsonl --require-kav    # PASS: 14/14 session(s)
+
+Supported cell: FreeBSD 15.1 amd64 jail claude-clojure, Python 3.12.14 (/scratch/venvs/tetris-py), websockets 17.1, Emacs 31.1

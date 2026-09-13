@@ -1,0 +1,14 @@
+Timeline
+- First run crashed in write-json: its object clause matched a list whose
+  car is a string, but the car of an alist is a pair. Fixed the pattern
+  to (((? string?) . _) . _); then the runner passed 14/14.
+- Spot checks before the locked run: 07-hard-drop and 12-game-over-reset
+  digests and final observations equal to the trace's (0.7 s each once
+  compiled).
+
+Reproduction
+  python3 spec/conformance/run.py --verbose \
+    --impl "guile3 -L impl/guile impl/guile/bin/conformance.scm"
+  => PASS: 14/14 traces, trace-set sha256 981baab4…2026
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11 (guile3/guild3, no packages); runner: Python 3.12.14 (/scratch/venvs/tetris-py).

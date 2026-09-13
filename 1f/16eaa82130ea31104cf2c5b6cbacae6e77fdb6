@@ -1,0 +1,8 @@
+Timeline
+- Canonical tick batching chosen to match the Emacs client and the Python tests (events of frame k just before the tick that runs k; a tick runs to the next event frame, max 3600).
+- Digests come from the traces themselves at their checkpoints; state lines from the reference view, refused unless the reference reproduces every digest and final observation.
+- 14 trace transcripts (14-bot-marathon is the largest, 645 KB, dominated by its 4354 events) plus 7 error transcripts.
+Reproduction
+  python spec/protocol/gen_transcripts.py --write  -> wrote 21 transcripts
+  python spec/protocol/gen_transcripts.py --check  -> ok: 21 transcripts equal what the traces give (also after merging main 510e8e0)
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6

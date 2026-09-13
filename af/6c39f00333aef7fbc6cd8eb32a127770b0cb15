@@ -1,0 +1,15 @@
+Timeline
+- Request reservation-displays-20260911T0902Z-record-flush: --record lost
+  on SIGTERM (0 bytes before a kill). Now line-buffered; SIGTERM -> exit 0.
+- Added a first "meta" record (the relay's capabilities.json) so a
+  checker knows the relay's displays and default without flags.
+- Moved the relay-side frame rule into display_contract.decode_source_frame
+  (shared with check_session.py).
+- close_timeout 2 s: a conformance fixture's SIGTERM waited 10 s on
+  connections a failed test had left open.
+Reproduction
+  cd contrib/displays
+  nice -n 10 timeout 600 /scratch/venvs/tetris-py/bin/python -m pytest -p no:cacheprovider demo
+  -> 45 passed (incl. test_relay_cli_records_live_and_exits_on_sigterm)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14,
+  websockets 17.1, pytest 9.1.1.

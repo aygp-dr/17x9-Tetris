@@ -1,0 +1,13 @@
+Timeline (2026-09-11 UTC, python workstream):
+- fd0fcc6: the dead agent's WIP committed as-is (server.py TCP+WS, protocol.py VERSION 1, client.py, tests).
+- 8050e38: merge main 5d091bb; one import-block conflict in tests/test_server.py, kept the WIP side.
+- 8050e38: check.py (spec/contract f3e074d, PROTOCOL.md sha256 3c06d4f4...) PASS 21/21 over tcp (27.7 s) and 21/21 over native ws (72.7 s), contract-set sha256 e45524faf46512ddd3e2bd53e4d1dec957aba7fdd374447b979cb320e3da7c4d.
+- 676088b: two WS sim tests fixed (a §4.7 state before close 1009; a lazy-viewer abort). impl/python/sim/tests: 172 passed.
+- WS handshake probe: no subprotocol -> 400, tetris-17x9.v0 only -> 400, path /other -> 404, /tetris-17x9 + tetris-17x9.v1 -> 101 with v1 selected.
+
+Reproduction:
+  PY=/scratch/venvs/tetris-py/bin/python W=/scratch/worktrees/17x9-Tetris-python C=/scratch/worktrees/17x9-Tetris-contract
+  $PY $C/spec/protocol/check.py --launch "env PYTHONPATH=$W/impl/python/engine:$W/impl/python/sim $PY -m tetris_sim.server --mode engine --clock lockstep --port {port}" --server "tcp://127.0.0.1:{port}"
+  $PY $C/spec/protocol/check.py --launch "env PYTHONPATH=$W/impl/python/engine:$W/impl/python/sim $PY -m tetris_sim.server --mode engine --clock lockstep --transport ws --port {port}" --server "ws://127.0.0.1:{port}/tetris-17x9"
+
+Supported cell: FreeBSD 15.1 amd64 jail (127.0.0.1 -> 10.0.0.22), Python 3.12.14, websockets 17.1, contract v1 (f3e074d), SPEC v2 engine.

@@ -1,0 +1,6 @@
+Timeline
+- The leg is opt-in (SERVERS) so that the engine gate's behaviour and output stay byte-compatible; server() lines print 'URL COMMAND' with {port}.
+- Mutants run on 02 and 12 only (both detect all seven in the full runs, see fd0674d); the transparent gatekeeper and WS front run all 21.
+Reproduction
+  (full gate runs under the heavy lock pending; appended when observed)
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6

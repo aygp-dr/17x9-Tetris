@@ -1,0 +1,26 @@
+Timeline
+- Reported by main: the first GIF frame was *scratch* + menu bar + a
+  *Warnings* window (init.el missing the lexical-binding cookie).
+- Cookie and (menu-bar-mode -1) went into the generated init.el: the warning
+  and the menu bar were gone, but *scratch* was still the first frame
+  (Emacs redisplays before command-line-1 loads -l files), and a 9 s server
+  start at load 10.5 made the GIF 47 s long.
+- An OSC 2 marker from record-game.el at play start; record.sh folds the
+  earlier output into one t=0 event (output byte-identical, timestamps
+  shifted). The first frame is now the empty display with its header line.
+- At load 9 one take played about 10% slow with 0 stalls (the timer was
+  late), so the summary now reports the wall-clock playback time.
+- The final take was recorded from `git archive HEAD` plus the new media
+  scripts, because task-2 edits to tetris-mit.el were in progress in the
+  worktree. The library code is HEAD's.
+
+Reproduction
+  PY=/scratch/venvs/tetris-py/bin/python contrib/emacs/media/record.sh cast gif
+  -> green-building-emacs: 923/923 digests match the trace, 0 stalls -- PASS
+     played 923 frames in 31.9 s (30.8 s at 30 FPS)
+     folded 1.22 s of startup (10 events) into t = 0
+  stills for review (not committed): /scratch/work/emacs-scratch/stills/
+    first.png, mid-15s.png, gameover-fill.png
+
+Supported cell: FreeBSD 15.1 amd64 jail, GNU Emacs 31.1 -nw, Python 3.12.14,
+  asciinema 3.2.1, agg 1.9.0.

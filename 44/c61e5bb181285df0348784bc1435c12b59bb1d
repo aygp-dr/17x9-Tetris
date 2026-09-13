@@ -1,0 +1,9 @@
+Timeline
+- Requests processed: clojure C1-C7, guile P11, main ladder citation. Every factual claim re-checked on the Python reference before writing:
+  C6 outputs and first bags as claimed; second and third bags added (0xDEADBEEF ZTJOISL LSOJIZT SLTJIZO; 0xFFFFFFFF JIOSTZL SITOJZL TZOJISL; 0x80000000 ZOTILSJ ZLJSOTI IJLSTOZ);
+  C3 render(S0) all black; C4 KAV-12 reset at frame 317 (digit 3 row 3 white at cols 2-6; score 0, hold none, new L active);
+  P11 witness: seed 1, frame 91 batch, resumed rotate_ccw succeeds at frame 399 (rotation 3) in the new game.
+- Header left at v2 (precedent: bump at seal); changelog carries an unsealed v3 entry.
+Reproduction
+  python spec/conformance/gen_appendix.py --check -> PASS: SPEC Appendix A matches the traces
+Cell: FreeBSD 15.1-RELEASE amd64 (claude-clojure jail; 127.0.0.1 binds land on lo0 10.0.0.22); Python 3.12.14 venv /scratch/venvs/tetris-py (--system-site-packages); websockets 17.1 (py312-websockets); ruff 0.16.6

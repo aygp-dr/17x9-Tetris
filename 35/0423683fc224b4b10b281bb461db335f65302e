@@ -1,0 +1,30 @@
+Timeline
+- Contract source: docs/PROTOCOL.md draft v0 exists only UNTRACKED in
+  /scratch/worktrees/17x9-Tetris-emacs (feat/emacs-client is still at
+  abb077a; no checkpoint commit). Built against sha256
+  87004bfc59b21e0a3b424d36f66dde85f79717be55e530b1e26159c801868503 (recorded
+  in client.hy as CONTRACT). Questions filed:
+  /scratch/work/tetris-parallel/requests/hy-steward-20260911T0605Z-client-contract-questions.md
+  (pin the contract; realtime stamps; spec_version 1 vs 2; WS framing;
+  lockstep frame order).
+- Smoke run 1: my harness started the server inside $(...), whose pipe
+  the server inherited, so it hung before any client ran. Run 2: the wait
+  for the server's address ended early (empty host). Run 3: fixed; all
+  PASS. Harness issues only; no client or server change.
+- Unit tests: 12 passed (in-test servers on the Python engine).
+
+Reproduction
+  nice -n 10 python -m pytest impl/hy/tests/test_hy_client.hy -q   # 12 passed
+  # the real server (uncommitted, emacs worktree; run, not edited):
+  env PYTHONPATH=$E/impl/python/engine:$E/impl/python/sim \
+    python -m tetris_sim.server --mode engine --port 0 --clock lockstep --seed 1
+  PYTHONPATH=impl/hy python -m hy -m tetris_hy.client --host H --port P --seed 42 --frames 300
+  -> 300/300 wire digests ok, 300/300 match the Hy engine — PASS
+  ... --kav spec/conformance/traces/12-game-over-reset.json
+  -> 447/447 match the Hy engine, 447/447 match the sealed trace — PASS
+  ... --kav spec/conformance/traces/13-suspended-input.json
+  -> 431/431 match the Hy engine, 431/431 match the sealed trace — PASS
+  (clock realtime) ... --seed 7 --frames 60
+  -> 60/60 wire digests ok (realtime: engine digests not checkable) — PASS
+Supported cell: FreeBSD 15.1-RELEASE amd64 (jail; 127.0.0.1 maps to
+  10.0.0.22), Python 3.12.14, hy 1.3.1, hypothesis 6.165.10, pytest 9.1.1.

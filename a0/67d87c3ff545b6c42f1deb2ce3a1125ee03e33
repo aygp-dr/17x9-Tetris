@@ -1,0 +1,8 @@
+Timeline
+- Runner validates structure then compares digests + final observation;
+  zero findings or FAIL. Driver protocol: JSON Lines, one run over all
+  traces (keeps JVM start-up to one per gate run in phase 3).
+Reproduction
+  /scratch/venvs/tetris-py/bin/python -m pytest impl/python/tests/test_conformance.py
+  -> green; see the gate commit note for the full gate run.
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, pytest 9.1.1.

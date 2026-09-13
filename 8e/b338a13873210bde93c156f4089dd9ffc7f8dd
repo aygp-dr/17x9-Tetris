@@ -1,0 +1,1 @@
+Timeline: readability only. Reproduction: guile3 -L impl/guile -L impl/guile/tests impl/guile/tests/run.scm unit => 53 expected passes, exit 0 (4.2 s; includes the 14 traces replayed in process); sh impl/guile/bin/lint.sh clean. Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11.

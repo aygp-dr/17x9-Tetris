@@ -1,0 +1,15 @@
+Timeline
+- displays-cljc (143f99a): bb relay 82 passed/5 skipped at default flags,
+  86/1 with the extra grids; 882 fixture cases agree; 2 fixture cases and
+  the lease schema flagged, WAIT 4 s too tight while a JVM held the lock.
+- Fixed the 2 cases (relay_answer: non-{ text is a frame), relaxed the
+  lease schema to the Rules' short form, WAIT 8 s.
+- Thorough hypothesis (3000 examples x 6 properties) on heavy.lock,
+  09:43:21Z-09:47:04Z: 6 passed in 221.6 s.
+Reproduction
+  cd contrib/displays; PY=/scratch/venvs/tetris-py/bin/python
+  $PY -m contract.gen_fixtures --check        -> no drift
+  nice -n 10 timeout 1200 $PY -m pytest -p no:cacheprovider demo contract
+  -> 175 tests: 174 passed, 1 skipped (jsonschema not installed), 76 s
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14,
+  websockets 17.1, pytest 9.1.1, hypothesis 6.165.10.

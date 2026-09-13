@@ -1,0 +1,5 @@
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 1200 /scratch/venvs/tetris-py/bin/python -m pytest -p no:cacheprovider \
+    demo/test_lease_keys.py demo/test_demo.py
+  -> errors="0" failures="0" skipped="0" tests="53"  (index state exported and tested before the commit)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14.

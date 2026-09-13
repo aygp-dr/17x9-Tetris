@@ -1,0 +1,3 @@
+Timeline: 2026-09-11.
+Reproduction: bb test tetris.displays.adapt-test -> 6 tests, 32 assertions, 0 failures; 1 property x 50 trials.
+Supported cell: babashka 1.13.220, FreeBSD 15.1 jail (claude-clojure), bb test fast loop; JVM clojure -M:test pending the heavy lock.

@@ -1,0 +1,12 @@
+Timeline
+- Read inputs/dlk1-display-lease-key.md in full (6517 bytes).
+- Readings where the text is loose: iss must equal "dres"; nbf >= 0;
+  rid, display and jti any string; base64url must be canonical (no
+  padding, zero trailing bits); a duplicate JSON key fails as bad-claims
+  (canonical re-encoding), a NaN as malformed.
+- inputs/dlk1-vectors.json not published yet: its test skips.
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 300 /scratch/venvs/tetris-py/bin/python \
+    -m pytest -p no:cacheprovider contract/test_dlk1.py
+  -> 50 tests: 49 passed, 1 skipped (inputs/dlk1-vectors.json not yet published)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14.

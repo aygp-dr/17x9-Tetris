@@ -1,0 +1,28 @@
+Timeline
+- Read docs/media (record_casts.sh, pty_drive.py, README): asciinema 3.2.1
+  --headless -f asciicast-v2 + agg 1.9.0 (asciinema-agg). Reused as-is.
+- Server has no bot; the bot runs offline and its inputs become a trace
+  (digest_every 1) that Emacs replays through the lockstep server.
+- s.lines is per level (resets at level-up), so the switch from bot to
+  hard drops is by frame (540), not by lines. Searched 11 seeds x 3
+  switches; picked seed 42 (docs continuity), 923 frames, 30.8 s.
+- Take 1: synchronous prefetch left ~13 s idle; agg's idle limit then
+  squeezed the game's 5 s white wait too. Take 2: unpaced streaming
+  starved redisplay (frame 100 received at 2.2 s, shown at 16.2 s).
+  Take 3: controller-paced ticks, 0 stalls. Take 4 (load 5.4): 24 stalls;
+  lead 30 -> 90 frames and gc-cons-threshold 64 MB. Take 5: 0 stalls.
+- xterm.el's terminal queries cost 2 s each against a headless recorder;
+  a throwaway init dir sets xterm-query-timeout nil before tty init.
+- Per user direction: no patch to tetris-mit-display.el; only the existing
+  option tetris-mit-cell-string is set (3 spaces), and a header line.
+- Verified frames of the GIF visually (stdlib GIF decoder -> PNG): the
+  countdown, play, the game-over fill, game 2's countdown, the PASS summary.
+
+Reproduction
+  PY=/scratch/venvs/tetris-py/bin/python contrib/emacs/media/record.sh
+  -> green-building-emacs: 923/923 digests match the trace, 0 stalls -- PASS
+  cast 81392 B, gif 300943 B (38.9 s, 790x480, 146 frames)
+
+Supported cell: FreeBSD 15.1 amd64 jail, GNU Emacs 31.1 (-nw, TERM
+  xterm-256color, COLORTERM truecolor), Python 3.12.14, asciinema 3.2.1,
+  agg 1.9.0, DejaVu Sans Mono.

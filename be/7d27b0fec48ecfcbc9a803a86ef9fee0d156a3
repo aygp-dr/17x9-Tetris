@@ -1,0 +1,28 @@
+Timeline
+- git merge main: fast-forward to ae120a6 (main has contrib/displays v0.2.1
+  and the native v1 server).
+- Read inputs/dlk1-display-lease-key.md; no issuer vectors published yet
+  (inputs/dlk1-vectors.json absent), no --lease-secret in the relay yet.
+  The v0.2.1 reserve schema allows extra fields, so `key' is carried and
+  ignored by today's mock relay.
+- Emacs 31 lacks base64url-decode-string; base64-decode-string with
+  BASE64URL decodes unpadded parts.  Test-only HMAC-SHA256 in Elisp,
+  known answer from Python hmac.
+- First e2e run: FAIL on the checker (the grant-time frame, the pre-game
+  black grid, was not in the displayed set) and 3 `rate' refusals.  Fixed
+  the checker; added a 10% pacing margin.  In the full suite, rate
+  refusals still happen under load (the bridge can bunch two frames); the
+  test now checks shown + refused = sent and refused <= 10%.
+
+Reproduction (the harness's S2, Emacs variant)
+  TETRIS_MIT_PYTHON=/scratch/venvs/tetris-py/bin/python \
+  emacs --batch -Q -L contrib/emacs -l tetris-mit-reserved \
+    -f tetris-mit-play-reserved-batch --relay ws://127.0.0.1:PORT/tools/display/ws \
+    --key-file KEY.dlk1 [--trace spec/conformance/traces/07-hard-drop.json]
+  -> KAV-07: 121/121 digests match on the Emacs display
+     source sent 105 frames (17 dropped, 0 refused); relay viewer saw 105,
+     each one a displayed frame, in order
+     PASS, RESULT {...,"exit":0,...}
+
+Supported cell: FreeBSD 15.1 amd64 jail, GNU Emacs 31.1 batch, Python 3.12.14,
+  websockets 17.1, mock relay contrib/displays at main ae120a6.

@@ -1,0 +1,28 @@
+Timeline
+- Read the pinned spec.md and capabilities.json (v0.2.1); the displays
+  kit's relay.py, display_contract.py (decode rules, quantize, seq rules)
+  and fixtures. websocket.el: (locate-library "websocket") is nil; the only
+  copy on disk is the 2010 Wave-era file (old API, pre-RFC 6455), not
+  usable.
+- Rewrote the source for pal16/hex, granted palette, quantization at
+  the source, the new error reasons, green-building default (user direction).
+- Oracle for the SPEC -> cga indices: the kit's Python quantize.
+- Fixture frames test first failed on my reading of expect.cells_rle
+  (large cells are run-length encoded); fixed the test.
+- Live check through a Python WebSocket bridge against the mock relay from
+  the displays worktree (read-only, PYTHONDONTWRITEBYTECODE=1).
+- Observed: under the relay's literal sequence rule a prefixed source loses
+  every frame after the 65535 -> 0 wrap (open question for the user).
+
+Reproduction
+  D=/scratch/worktrees/17x9-Tetris-displays/contrib/displays
+  TETRIS_MIT_PYTHON=/scratch/venvs/tetris-py/bin/python TETRIS_MIT_DISPLAYS_DIR=$D \
+  TETRIS_MIT_DISPLAY_FIXTURES=$D/contract/fixtures emacs --batch -Q -L contrib/emacs \
+    -L contrib/emacs/test -l ert -l contrib/emacs/test/tetris-mit-display-source-test.el \
+    -f ert-run-tests-batch-and-exit        -> Ran 45 tests, 45 results as expected
+  (without the two variables: 41 pass, 4 skipped)
+  gate: tetris-mit-test 25/25, display 37/37, KAV batch 14/14; all .el
+  byte-compile with byte-compile-error-on-warn.
+
+Supported cell: FreeBSD 15.1 amd64 jail, GNU Emacs 31.1 batch, Python 3.12.14,
+  websockets 17.1.

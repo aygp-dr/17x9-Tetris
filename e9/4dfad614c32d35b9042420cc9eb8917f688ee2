@@ -1,0 +1,15 @@
+Timeline
+- Checked: pygame, PIL and _tkinter are not importable in the venv; no
+  DISPLAY. Per the coordinator, no network install: stdlib PNG and GIF.
+- First GIF (120 frames, 256 px box) was 215,075 bytes; 60 frames with
+  8 px cells: 40,657 bytes.
+- Looked at gallery/green-building.png (wide windows, masonry) and
+  dc32.png (the 4 gb shades, no gap): as the presets say.
+Reproduction
+  cd contrib/displays; PY=/scratch/venvs/tetris-py/bin/python
+  $PY -m demo sim -d all bars --frames 1 --png demo/media/gallery --no-ansi
+  $PY -m demo sim -d green-building tetris --frames 60 --cell 8 --gif demo/media --no-ansi
+  nice -n 10 timeout 1200 $PY -m pytest -p no:cacheprovider demo contract
+  -> 211 tests: 210 passed, 1 skipped (jsonschema not installed), 76 s
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14,
+  websockets 17.1, pytest 9.1.1, hypothesis 6.165.10; zlib from the stdlib.

@@ -1,0 +1,9 @@
+Timeline
+- The worktree predates main's contract-v1 server (its server.py speaks
+  v0), so the end-to-end test uses a lockstep contract-v1 stand-in.
+- The cljc fixture: bb on /scratch/worktrees/17x9-Tetris-displays-cljc
+  (d0cf331), read only (git status unchanged there), 48 cases.
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 1200 /scratch/venvs/tetris-py/bin/python -m pytest -p no:cacheprovider demo contract
+  -> errors="0" failures="0" skipped="1" tests="397"  (index state exported and tested before the commit)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1, bb (cljc side).

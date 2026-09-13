@@ -1,0 +1,22 @@
+Timeline
+- Requested by the user through the coordinator: Appendix A as KATs, one
+  editable representation (the traces), a gate step with a negative test,
+  classified as a clarification.
+- Draft 1 of the generator put checkpoints at 1/4, 1/2 and 3/4 of the whole
+  run: most short vectors then shared the boot countdown's digests, which
+  pin nothing. Draft 2 spreads them over frames 91..frames-1.
+- IDs: KAV-NN = trace file number NN; no renumbering (01..14).
+- Seeds-only vectors deferred to v3: they would change the sealed Python
+  reference and the trace set, i.e. not a clarification.
+- Gate run on this tree: corrupted trace rejected by both drivers, 5 mutants
+  rejected, hand-edited Appendix A digest rejected, appendix PASS, python
+  14/14, hy 14/14, GATE: PASS.
+
+Reproduction
+  python3 spec/conformance/gen_appendix.py --write   # once, to fill the block
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock bin/verify.sh
+  -> self-test ok x8; PASS: SPEC Appendix A matches the traces;
+     python PASS 14/14; hy PASS 14/14; GATE: PASS
+  trace set -> 981baab4279c5c9f93f42eda23f1eb9f2b0889b4c228637e2ac19b9a479c2026
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, hy 1.3.1,
+  hypothesis 6.165.10, pytest 9.1.1 (venv /scratch/venvs/tetris-py).

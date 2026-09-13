@@ -1,0 +1,25 @@
+Timeline
+- User request (through the coordinator): ladder semantics in 9.1, the
+  phase machine as a CYCLE, an explicit legal-edge table "derived from the
+  9.2 pseudocode, verified against the Python engine", P20 T-legality, a
+  gate check with an illegal-edge mutant, schema gate before state gate.
+  Reservation/lease concepts kept out of SPEC.
+- The proposed table had 10 edges. Deriving from the pseudocode gave 12:
+  the frame that ends a countdown can lock (LOGICAL(E) at boot, RESUME
+  after a game over). Experiment 006 on the Python engine: traces reach 9
+  edges, random + bot play 10 (exactly the proposal), constructed frame-91
+  batches (seed 1: 400 soft drops; a 168-event clear batch) reach the two
+  others; no illegal edge observed. Table 9.1 therefore has 12 edges; the
+  proposal's 10 would have rejected conforming input.
+- The ladder repo is not present in this jail: the sha256 of spec.org at
+  spec-v2.4.0 is cited as given (88654eb6...51fc), not re-verified here.
+
+Reproduction
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock \
+    /scratch/venvs/tetris-py/bin/python experiments/006-phase-edges/run.py 40 1500
+  -> witnesses {(countdown, gameover): 1, (countdown, clearing): (1, 168)}
+  -> RESULT: observed == LEGAL (12 edges)
+  python3 spec/conformance/gen_appendix.py --check
+  -> PASS: SPEC Appendix A matches the traces
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, hy 1.3.1,
+  hypothesis 6.165.10, pytest 9.1.1 (venv /scratch/venvs/tetris-py).

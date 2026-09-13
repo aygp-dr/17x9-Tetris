@@ -1,0 +1,16 @@
+Timeline
+- guild3 compile -W3 reported only false positives: unused variable
+  `failure' and `w' from (ice-9 match) expansions, and "possibly unused
+  module (srfi srfi-9 gnu)", whose bindings are macros.
+- Read language/tree-il/analyze.scm: -W3 is level 1 plus unused-toplevel,
+  unused-module and shadowed-toplevel (level 2) plus unused-variable
+  (level 3). Chose -W1 -Wunused-toplevel -Wshadowed-toplevel, and fail on
+  any warning line.
+- Its first run over the test modules caught a real bug: (tetris-test
+  check) used let-values without (srfi srfi-11).
+
+Reproduction
+  sh impl/guile/bin/lint.sh
+  => lint-guile: ok, 16 files compiled, no warnings   (32 s)
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11 (guile3/guild3, no packages); runner: Python 3.12.14 (/scratch/venvs/tetris-py).

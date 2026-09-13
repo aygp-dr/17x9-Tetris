@@ -1,0 +1,18 @@
+Timeline
+- Hy driver, first run through spec/conformance/run.py: PASS 14/14,
+  trace-set sha256 981baab4...2026, before any spec change was considered.
+- Gate restructured: IMPLS + driver(); the corrupted-trace self-test runs
+  through every driver (a driver echoing the traces' answers would pass
+  the reference check but not this one).
+- Gate run on this tree: corrupted trace rejected by the python and hy
+  drivers, all 5 mutants rejected, python PASS 14/14, hy PASS 14/14,
+  GATE: PASS. Hy pytest on the same run: 73 passed.
+
+Reproduction
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock sh -c \
+    'bin/verify.sh; /scratch/venvs/tetris-py/bin/python -m pytest impl/hy/tests -q'
+  -> self-test ok x7; == python PASS 14/14; == hy PASS 14/14; GATE: PASS
+  -> 73 passed
+  trace set -> 981baab4279c5c9f93f42eda23f1eb9f2b0889b4c228637e2ac19b9a479c2026
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, hy 1.3.1,
+  hypothesis 6.165.10, pytest 9.1.1 (venv /scratch/venvs/tetris-py).

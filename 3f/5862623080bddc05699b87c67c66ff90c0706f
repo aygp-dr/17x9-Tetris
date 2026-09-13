@@ -1,0 +1,10 @@
+Timeline
+- Read the findings and their timelines (records 20260911t132814z and
+  20260911t133242z, relay.jsonl, read only).
+- Regression tests first; against HEAD 687f3dc they fail 3 of 3 (2 x
+  'not black', 1 x 'expired 59.35 s early'); with the fix they pass.
+Reproduction
+  cd contrib/displays; nice -n 10 timeout 1500 /scratch/venvs/tetris-py/bin/python \
+    -m pytest -p no:cacheprovider demo contract
+  -> 405 tests: 404 passed, 1 skipped (jsonschema), 93 s (with the feed fix)
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure), Python 3.12.14, websockets 17.1.

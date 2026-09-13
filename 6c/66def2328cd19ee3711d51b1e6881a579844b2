@@ -1,0 +1,23 @@
+Timeline
+- Found while re-telling the engine in Hy (impl/hy/tetris_hy/engine.hy
+  models animations as a script of segments, which forces a decision at
+  every segment boundary about the frame's input).
+- 9.2 resume frame: the Hy engine follows the pseudocode (queue). Pinned
+  by test_p18_the_frame_that_resumes_after_a_game_over_queues_input
+  (commit 648742e) and test_game_over_boundaries_agree (709d98f), which
+  crosses flash -> game over -> countdown -> resume with random input
+  against the Python engine: 0 divergences.
+- Flash -> pending game over: the Hy engine discards, the Python engine
+  queues; the differential compares the queue and still agrees at every
+  frame after the reset, as the note predicts (the queue is emptied).
+  Unobservable, hence a note, not a rule.
+- No revision: no trace changes, trace-set hash unchanged.
+
+Reproduction
+  python3 spec/conformance/gen_appendix.py --check
+  -> PASS: SPEC Appendix A matches the traces
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock \
+    /scratch/venvs/tetris-py/bin/python -m pytest impl/hy/tests -q
+  -> 73 passed
+Supported cell: FreeBSD 15.1-RELEASE amd64, Python 3.12.14, hy 1.3.1,
+  hypothesis 6.165.10, pytest 9.1.1 (venv /scratch/venvs/tetris-py).

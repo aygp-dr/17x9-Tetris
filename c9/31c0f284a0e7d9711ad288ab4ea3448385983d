@@ -1,0 +1,20 @@
+Timeline
+- Read the pinned spec.md and capabilities.json in full; the demo at
+  eba94b0 implemented the pre-0.2.1 text (w*h*3 RGB, "not holder").
+- Reference core first (contract/display_contract.py), then the relay on
+  it. Level tables checked by hand: gb 0|1-7->1|8-12->2|13-15->3;
+  idx*(n-1)/15 is never a half, so the rounding mode is moot.
+- Found: in this FreeBSD jail 127.0.0.1 arrives as the jail address
+  (10.0.0.22) on UDP, so the UDP holder is udp:10.0.0.22:PORT; the test
+  matches the port.
+- Coordinator requests folded in: repo default green-building (B);
+  boundaries (C) partly here (ttl 0/1/900/901/1.5/"10", seq wrap, empty
+  and +-1 frames, CRLF, 15/16/255, viewers cap), the rest in the kit.
+Reproduction
+  cd contrib/displays
+  nice -n 10 timeout 600 /scratch/venvs/tetris-py/bin/python -m pytest -q -p no:cacheprovider demo
+  -> 44 passed in 19.3 s
+  /usr/local/bin/ruff check contrib/displays -> All checks passed!
+Supported cell: FreeBSD 15.1 amd64 (jail claude-clojure, Claude via
+  linuxulator), Python 3.12.14 (venv /scratch/venvs/tetris-py), websockets 17.1,
+  pytest 9.1.1; ruff /usr/local/bin/ruff. Loopback only; no wal.sh.

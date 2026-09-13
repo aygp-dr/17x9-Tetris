@@ -1,0 +1,22 @@
+Timeline
+- Only the two lines the ownership rules allow: the IMPLS token and the
+  driver() case, inlined so no variable is added; the case sits before
+  the *) fallback, which must stay last to be reachable.
+- Before the gate: spec/conformance/run.py alone passed 14/14 with the
+  Guile driver on its first run.
+- Gate run 1 started while main 510e8e0 was being merged (it took the
+  heavy lock during the merge), so a post-merge run follows; main's
+  changes to impl/python are ruff style only.
+
+Reproduction (gate run 1)
+  nice -n 10 lockf -k -t 7200 /scratch/locks/heavy.lock timeout 1800 bin/verify.sh
+  self-test ok: corrupted trace rejected (python, hy, guile drivers)
+  self-test ok: 6 mutants rejected (ccw-release-keeps-dcd,
+    gravity-ceil-cadence, level-target-plus-six, standard-180-kicks,
+    no-ghost, illegal-edge-gameover-playing)
+  self-test ok: hand-edited Appendix A digest rejected
+  PASS: SPEC Appendix A matches the traces
+  python, hy, guile: PASS 14/14, trace-set sha256 981baab4…2026
+  GATE: PASS   (11m45 wall, most of it the heavy lock's queue)
+
+Supported cell: FreeBSD 15.1-RELEASE amd64; GNU Guile 3.0.11; Python 3.12.14 (/scratch/venvs/tetris-py); SPEC v2 sha256 294de89a…0e90.

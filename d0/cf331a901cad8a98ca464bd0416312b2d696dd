@@ -1,0 +1,7 @@
+Timeline: 2026-09-11 09:41Z fmt:fix under heavy.lock; final gate.
+Reproduction:
+- bb test (babashka 1.13.220, PBT 50 trials, fixtures dir set): see final-bb numbers in the workstream report.
+- JVM at 143f99a under lockf heavy.lock, -Xmx1g, PBT_NUM_TESTS=100: clojure -M:test -> 74 tests, 624 assertions, 0 failures (33 s); bb lint 0 errors; bb fmt clean after this commit.
+- contract/relay_conformance.py (displays-contract working copy, ~09:30-09:45Z) vs bb relay at 143f99a: default flags 82 passed 5 skipped; +256x1/1x256 --seq-rule serial 86 passed 1 skipped (UDP); literal 85 passed 1 timeout under JVM contention, 3/3 on rerun.
+- contract fixtures via bb fixtures: 882 cases agree, 2 KNOWN fixture issues (non-object JSON messages).
+Supported cell: bb relay on babashka 1.13.220 / FreeBSD 15.1 jail, loopback; JVM OpenJDK 25 + Clojure 1.12.6.
