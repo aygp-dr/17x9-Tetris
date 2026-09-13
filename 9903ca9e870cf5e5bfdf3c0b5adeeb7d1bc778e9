@@ -1,0 +1,15 @@
+Timeline
+- Placed the pygame sim verbatim; wrote the README from the real Java
+  (ArcadeController.java), confirming its quirks.
+
+Reproduction / observations
+- py_compile OK. Headless protocol test (no pygame; import is lazy):
+  buttons 'U','L' delivered, non-button ignored; set_leds(8|2) -> b'UdLr';
+  a len-prefixed 459-byte RGB frame -> pixel(0,0)=(255,0,0); NUM_PIXELS=153.
+- Faithful quirks documented: setLEDs uses %8/%4/%2/%1 (should be &), so the
+  R lamp can never light; setLED() blocks on the monitor held across
+  accept()/read().
+- Flagged: the module docstring says 'raw RGB bytes' but FrameServer requires
+  a uint32 length prefix (verified length-prefixed works).
+
+Supported cell: python3.11; FreeBSD amd64. pygame optional/not required.
