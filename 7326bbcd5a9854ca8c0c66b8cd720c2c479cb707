@@ -1,0 +1,14 @@
+Timeline
+- Ported piece/board/game/color from the Java, keeping observable behaviour.
+- Two test expectations were wrong (the port matched Java): (1) clear-rows
+  compaction leaves an empty row below a block that had one; (2) summing
+  1.0/30 thirty times lands just under 1.0 in float64, so level-0 gravity
+  steps on the 31st tick, not the 30th -- faithful to Java's double.
+- Deviation: color.go clamps HSB saturation/brightness to [0,1] (java.awt
+  does not); affects only the level color animation, not game logic.
+
+Reproduction
+- cd impl/go && go build ./... && go vet ./... && gofmt -l . && go test ./...
+- observed: ok mitris/mitris; gofmt clean; vet clean.
+
+Supported cell: go1.24.13 freebsd/amd64.
